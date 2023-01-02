@@ -3,15 +3,15 @@ import json
 
 from snowflake.snowpark import Session, version, Window, Row
 
---  connect to Snowflake
+# connect to Snowflake
 with open('creds.json') as f: # check the creds-fake.json file for format
     connection_parameters = json.load(f)  
 session = Session.builder.configs(connection_parameters).create()
 
--- # get Snowflake table data
+# get Snowflake table data
 employeeDf = session.table("employee")
 
--- # main entry form
+# main entry form
 with st.form("my_form"):
     st.write("### Enter employee details")
 
@@ -27,10 +27,10 @@ with st.form("my_form"):
     salary_val = st.number_input("Salary", step= 1000, value=50000)
 
     insider_val = st.checkbox("Insider?")
-    -- # Every form must have a submit button.
+    # Every form must have a submit button.
     submitted = st.form_submit_button("Save Employee")
     if submitted:
-        -- # creates a new df and appends to the DB
+        # creates a new df and appends to the DB
         st.write("name:", name_val, "| age:", age_val, "| experience: ", experience_val, "| job:", job_val, "| salary: ", salary_val, "| insider:", insider_val)
         newEmployeeDf=session.createDataFrame([Row(employee_id=str(uuid.uuid4()) ,
             name=name_val, 
@@ -44,13 +44,13 @@ with st.form("my_form"):
 if st.button('Delete database'):
     employeeDf.delete()
 
--- # refreshes automatically every time the data frame changes
+# refreshes automatically every time the data frame changes
 st.write("Employees database:")
 st.table(employeeDf.toPandas())
 
 with st.expander("But wait, there's more, dont' leave just yet!", expanded=False):
     with st.form('nba_salary_form'):
-        -- # st.write("### What would they earn in the NBA? *")
+        # st.write("### What would they earn in the NBA? *")
     
         st.markdown("### What would they earn in the NBA? * \n<sup>* Based on cutting edge data science</sup>", unsafe_allow_html=True)
         name_val  = st.selectbox("Select name",employeeDf.select("name").toPandas())
